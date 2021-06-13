@@ -47,8 +47,16 @@ def orders(request):
 def change_password(request):
     return render(request, 'app/changepassword.html')
 
-def mobile(request):
-    return render(request, 'app/mobile.html')
+def mobile(request, data=None):
+    if data == None:
+        mobiles = Product.objects.filter(category='M')
+    elif data == 'OnePlus' or data == 'iPhone' or data == 'Samsung' or data == 'Oppo' or data == 'Gionee' or data == 'MI':
+        mobiles = Product.objects.filter(category='M').filter(brand=data)
+    elif data == 'below':
+        mobiles = Product.objects.filter(category='M').filter(selling_price__lt=15000)
+    elif data == 'above':
+        mobiles = Product.objects.filter(category='M').filter(selling_price__gt=15000)
+    return render(request, 'app/mobile.html', {'mobiles':mobiles})
 
 def login(request):
     return render(request, 'app/login.html')
