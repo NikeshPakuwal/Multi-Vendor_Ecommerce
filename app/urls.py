@@ -1,12 +1,24 @@
 from django.urls import path
-from app import views
+from app import views, productViews
 from django.conf import settings
 from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', views.ProductView.as_view(), name = "home"),
-    path('product-detail/<int:pk>', views.ProductDetailView.as_view(), name='product-detail'),
+    path('', productViews.ProductView.as_view(), name = "home"),
+    path('product-detail/<int:pk>', productViews.ProductDetailView.as_view(), name='product-detail'),
+
+    path('mobile/', productViews.mobile, name='mobile'),
+    path('mobile/<slug:data>', productViews.mobile, name='mobiledata'),
+
+    path('laptop/', productViews.laptop, name='laptop'),
+    path('laptop/<slug:data>', productViews.laptop, name='laptopdata'),
+
+    path('topwear/', productViews.topwear, name='topwear'),
+    path('topwear/<slug:data>', productViews.topwear, name='topweardata'),
+
+    path('bottomwear/', productViews.bottomwear, name='bottomwear'),
+    path('bottomwear/<slug:data>', productViews.bottomwear, name='bottomweardata'),
 
     path('cart/', views.add_to_cart, name='add-to-cart'),
     path('buy/', views.buy_now, name='buy-now'),
@@ -14,10 +26,6 @@ urlpatterns = [
     path('address/', views.address, name='address'),
     path('orders/', views.orders, name='orders'),
     path('changepassword/', views.change_password, name='changepassword'),
-
-    path('mobile/', views.mobile, name='mobile'),
-    path('mobile/<slug:data>', views.mobile, name='mobiledata'),
-    
     path('login/', views.login, name='login'),
     path('registration/', views.customerregistration, name='customerregistration'),
     path('checkout/', views.checkout, name='checkout'),
