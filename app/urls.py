@@ -20,6 +20,8 @@ urlpatterns = [
     path('bottomwear/', productViews.bottomwear, name='bottomwear'),
     path('bottomwear/<slug:data>', productViews.bottomwear, name='bottomweardata'),
 
+    path('registration/', views.CustomerRegistrationView.as_view(), name='customerregistration'),
+
     path('cart/', views.add_to_cart, name='add-to-cart'),
     path('buy/', views.buy_now, name='buy-now'),
     path('profile/', views.profile, name='profile'),
@@ -27,7 +29,6 @@ urlpatterns = [
     path('orders/', views.orders, name='orders'),
     path('changepassword/', views.change_password, name='changepassword'),
     path('login/', views.login, name='login'),
-    path('registration/', views.customerregistration, name='customerregistration'),
     path('checkout/', views.checkout, name='checkout'),
 
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
