@@ -1,7 +1,10 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserModel, UsernameField
 from django.contrib.auth.models import User
 from django.forms import widgets
+from django.forms.fields import CharField
+from django.utils.translation import gettext as _
+
 
 class CustomerRegistrationForm(UserCreationForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
@@ -13,3 +16,8 @@ class CustomerRegistrationForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
         labels = {'email' : 'Email'}
         widgets = {'username' : forms.TextInput(attrs={'class':'form-control'})}
+
+class LoginForm(AuthenticationForm):
+    username = UsernameField(widget=forms.TextInput(attrs={'autofocus':True, 'class':'form-control'}))
+    password = CharField(label=_("Password"), strip=False, widget=forms.PasswordInput(attrs={'autocomplete':'current-password', 'class':'form-control'}))
+    
