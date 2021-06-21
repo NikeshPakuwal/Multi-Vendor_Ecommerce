@@ -36,10 +36,11 @@ urlpatterns = [
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='app/password_reset_complete.html'), name='password_reset_complete'),
 
     path('profile/', views.ProfileView.as_view(), name='profile'),
-
-    path('cart/', views.add_to_cart, name='add-to-cart'),
-    path('buy/', views.buy_now, name='buy-now'),
     path('address/', views.address, name='address'),
+
+    path('add-to-cart/', views.add_to_cart, name='add-to-cart'),
+
+    path('buy/', views.buy_now, name='buy-now'),
     path('orders/', views.orders, name='orders'),
     path('checkout/', views.checkout, name='checkout'),
 

@@ -48,15 +48,24 @@ class ProfileView(View):
             }
         return render(request, 'app/profile.html', context)
 
+def address(request):
+    add = Customer.objects.filter(user=request.user)
+    context = {
+        'add' : add,
+        'active' : 'btn-primary'
+    }
+    return render(request, 'app/address.html', context)
 
 def add_to_cart(request):
-     return render(request, 'app/addtocart.html')
+    user = request.user
+    product_id = request.GET.get('prod_id')
+    product = Product.objects.get(id=product_id)
+    Cart(user=user, product=product).save()
+
+    return render(request, 'app/addtocart.html')
 
 def buy_now(request):
     return render(request, 'app/buynow.html')
-
-def address(request):
-    return render(request, 'app/address.html')
 
 def orders(request):
     return render(request, 'app/orders.html')
