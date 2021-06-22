@@ -1,5 +1,5 @@
 from django.http import request
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from.models import Product, Cart, OrderPlaced, Customer
 from.forms import CustomerRegistrationForm, CustomerProfileForm
@@ -61,8 +61,32 @@ def add_to_cart(request):
     product_id = request.GET.get('prod_id')
     product = Product.objects.get(id=product_id)
     Cart(user=user, product=product).save()
+    return redirect('/cart')
 
-    return render(request, 'app/addtocart.html')
+def show_cart(request):
+    if request.user.is_authenticated:
+        user = request.user
+        cart = Cart.objects.filter(user=user)
+
+        amount = 0.0
+        shipping_amount = 50.0
+        total_amount = 0.0
+        cart_product = [p for p in Cart.objects.all() if p.user == user]
+
+        if cart_product:
+            for p in cart_product:
+                tempamount = (p.quantity * p.product.discounted_price)
+                amount += tempamount
+                totalamount = amount + shipping_amount
+            context = {
+                'carts' : cart,
+                'amount' : amount,
+                'totalamount' : totalamount
+            }
+            return render(request, 'app/addtocart.html', context)
+        else:
+            return render(request, 'app/emptycart.html')
+
 
 def buy_now(request):
     return render(request, 'app/buynow.html')
