@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from.models import Product, Cart, OrderPlaced, Customer
+from django.db.models import Q
 
 
 class ProductView(View):
@@ -22,7 +23,15 @@ class ProductView(View):
 class ProductDetailView(View):
     def get(self, request, pk):
         product = Product.objects.get(pk = pk)
-        return render(request, 'app/productdetail.html', {'product' : product})
+        item_already_in_cart = False
+        if request.user.is_authenticated:
+            item_already_in_cart = Cart.objects.filter(Q(product=product.id) & Q(user=request.user)).exists()
+            
+        context = {
+            'item_already_in_cart' : item_already_in_cart,
+            'product' : product
+        }
+        return render(request, 'app/productdetail.html', context)
 
 
 def mobile(request, data=None):
