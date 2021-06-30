@@ -24,10 +24,16 @@ class CustomerRegistrationView(View):
 @method_decorator(login_required, name='dispatch')
 class ProfileView(View):
     def get(self, request):
+        totalitem = 0
         form = CustomerProfileForm()
+
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+        
         context = {
             'form' : form,
-            'active' : 'btn-primary'
+            'active' : 'btn-primary',
+            'totalitem' : totalitem
         }
         return render(request, 'app/profile.html', context)
     
@@ -53,10 +59,16 @@ class ProfileView(View):
         return render(request, 'app/profile.html', context)
 
 def address(request):
+    totalitem = 0
     add = Customer.objects.filter(user=request.user)
+
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user = request.user))
+
     context = {
         'add' : add,
-        'active' : 'btn-primary'
+        'active' : 'btn-primary',
+        'totalitem' : totalitem
     }
     return render(request, 'app/address.html', context)
 
@@ -70,7 +82,9 @@ def add_to_cart(request):
 
 @login_required
 def show_cart(request):
+    totalitem = 0
     if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user = request.user))
         user = request.user
         cart = Cart.objects.filter(user=user)
 
@@ -87,7 +101,8 @@ def show_cart(request):
             context = {
                 'carts' : cart,
                 'amount' : amount,
-                'totalamount' : totalamount
+                'totalamount' : totalamount,
+                'totalitem' : totalitem
             }
             return render(request, 'app/addtocart.html', context)
         else:
@@ -159,6 +174,7 @@ def remove_cart(request):
 
 @login_required
 def checkout(request):
+    totalitem = 0
     user = request.user
     add = Customer.objects.filter(user=request.user)
     cart_items = Cart.objects.filter(user=user)
@@ -171,8 +187,10 @@ def checkout(request):
             tempamount = (p.quantity * p.product.discounted_price)
             amount += tempamount
         totalamount = amount + shipping_amount
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
 
-    return render(request, 'app/checkout.html', {'add' : add, 'totalamount' : totalamount, 'cart_items':cart_items})
+    return render(request, 'app/checkout.html', {'add' : add, 'totalamount' : totalamount, 'cart_items' : cart_items, 'totalitem' : totalitem})
 
 @login_required
 def payment_done(request):

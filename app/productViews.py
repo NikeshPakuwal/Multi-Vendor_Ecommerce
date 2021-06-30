@@ -6,30 +6,38 @@ from django.db.models import Q
 
 class ProductView(View):
     def get(self, request):
+        totalitem = 0
         topwears = Product.objects.filter(category = 'TW')
         bottomwears = Product.objects.filter(category = 'BW')
         mobiles = Product.objects.filter(category = 'M')
         laptops = Product.objects.filter(category = 'L')
 
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user = request.user))
+
         context = {
             'topwears' : topwears,
             'bottomwears' : bottomwears,
             'mobiles' : mobiles,
-            'laptops' : laptops
+            'laptops' : laptops,
+            'totalitem' : totalitem
         }
         return render(request, 'app/home.html', context)
 
 
 class ProductDetailView(View):
     def get(self, request, pk):
+        totalitem = 0
         product = Product.objects.get(pk = pk)
         item_already_in_cart = False
         if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user = request.user))
             item_already_in_cart = Cart.objects.filter(Q(product=product.id) & Q(user=request.user)).exists()
             
         context = {
             'item_already_in_cart' : item_already_in_cart,
-            'product' : product
+            'product' : product,
+            'totalitem' : totalitem
         }
         return render(request, 'app/productdetail.html', context)
 
